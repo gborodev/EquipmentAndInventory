@@ -1,30 +1,82 @@
+using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class BaseItemSlot : MonoBehaviour
+public class BaseItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler
 {
-    private ItemSlot slot;
-
     [SerializeField] Image itemIconImage;
     [SerializeField] TMP_Text itemAmountText;
 
-    public Item CurrentItem => slot.Item;
-    public int CurrentAmount => slot.Amount;
+    private Item item;
+    private int amount;
 
-    public void Init()
+    public Item Item
     {
-        slot = new ItemSlot();
-        slot.OnSlotChanged += SlotChanged;
+        get => item;
+        set
+        {
+            item = value;
 
-        slot.Item = null;
+            itemIconImage.enabled = item != null;
+
+            if (item != null)
+            {
+                itemIconImage.sprite = item.ItemIcon;
+            }
+        }
     }
 
-    public void AddItemToSlot(Item item, int amount = 1)
+    public int Amount
     {
-        if (slot.Item is null) slot.Item = item;
+        get => amount;
+        set
+        {
+            amount = value;
 
-        slot.Amount += amount;
+            itemAmountText.gameObject.SetActive(amount > 1);
+            itemAmountText.text = amount.ToString();
+        }
+    }
+
+    //Events
+    public event Action<BaseItemSlot> OnEnterEvent;
+    public event Action<BaseItemSlot> OnExitEvent;
+    public event Action<BaseItemSlot> OnBeginDragEvent;
+    public event Action<BaseItemSlot> OnEndDragEvent;
+    public event Action<BaseItemSlot> OnDragEvent;
+    public event Action<BaseItemSlot> OnDropEvent;
+
+    private void OnValidate()
+    {
+        Item = item;
+        Amount = amount;
+    }
+
+    public int AddItemToSlot(Item item, int amount = 1)
+    {
+        if (Item is null)
+            Item = item;
+
+        if (Amount + amount > Item.MaxStack)
+        {
+            amount -= Item.MaxStack - Amount;
+            Amount = Item.MaxStack;
+        }
+        else
+        {
+            Amount += amount;
+            amount = 0;
+        }
+
+        return amount;
+    }
+
+    public void RemoveItemToSlot(Item item, int amount = 1)
+    {
+        Item = item;
+        Amount -= amount;
     }
 
     private void SlotChanged(ItemSlot slot)
@@ -43,26 +95,63 @@ public class BaseItemSlot : MonoBehaviour
         }
     }
 
-    public virtual bool CanAddItem(Item item)
+    public virtual bool CanAddStack(Item item)
     {
-        if (slot.Item is null) return false;
+        if (Item is null) return false;
 
-        return slot.Item.ID == item.ID;
+        return Item.ID == item.ID;
     }
 
     public virtual bool IsOverStack(Item item, int amount)
     {
+        return Amount + amount > item.MaxStack;
+    }
 
-        return slot.Amount + amount > item.MaxStack;
+    public virtual void Clear()
+    {
+        Item = null;
+        Amount = 0;
     }
 
     public virtual bool IsNull()
     {
-        return slot.Item is null;
+        return Item is null;
     }
 
     public virtual bool IsFull()
     {
-        return slot.Amount >= slot.Item.MaxStack;
+        return Amount >= Item.MaxStack;
     }
+
+    #region Event Funcs
+    public void OnDrop(PointerEventData eventData)
+    {
+        OnDropEvent?.Invoke(this);
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        OnDragEvent?.Invoke(this);
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        OnEndDragEvent?.Invoke(this);
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        OnBeginDragEvent?.Invoke(this);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        OnExitEvent?.Invoke(this);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        OnEnterEvent?.Invoke(this);
+    }
+    #endregion
 }

@@ -22,6 +22,7 @@ public class PanelManagements : Singleton<PanelManagements>
         marketButton.onClick.AddListener(MarketButtonHandler);
 
         marketPanel.Hide();
+        equipmentPanel.Hide();
     }
 
     private void EquipmentButtonHandler()

@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 434fa5b9b7003904e9a9a081b94185a9, type: 3}
-  m_Name: Iron Sword
+  m_Script: {fileID: 11500000, guid: b082c87f3759e614eb3bde2d50303a75, type: 3}
+  m_Name: Cherries
   m_EditorClassIdentifier: 
-  itemName: Iron Sword
-  itemSprite: {fileID: 21300000, guid: 2cd8ff2b209e9fb409dc0fee139a343d, type: 3}
-  stackSize: 1
-  equipmentType: 1
+  itemName: Cherries
+  itemSprite: {fileID: 21300000, guid: 31fda62f385632e418185f23db739675, type: 3}
+  stackSize: 4
+  isConsumables: 1

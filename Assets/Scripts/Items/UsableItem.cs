@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[CreateAssetMenu(menuName = "Item/Usable Item")]
 public class UsableItem : Item
 {
     [Header("UsableItem Variables")]

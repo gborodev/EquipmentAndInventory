@@ -1,8 +1,18 @@
+using System;
 using UnityEngine;
 
 public class ItemContainer : MonoBehaviour, IItemContainer
 {
     [SerializeField] BaseItemSlot[] containerSlots;
+
+    public event Action<BaseItemSlot> OnSlotPointerEnter;
+    public event Action<BaseItemSlot> OnSlotPointerExit;
+    public event Action<BaseItemSlot> OnSlotBeginDrag;
+    public event Action<BaseItemSlot> OnSlotDrag;
+    public event Action<BaseItemSlot> OnSlotEndDrag;
+    public event Action<BaseItemSlot> OnSlotDrop;
+
+    public event Action<Item, int> OnRemainingItem;
 
     protected virtual void Awake()
     {
@@ -10,33 +20,39 @@ public class ItemContainer : MonoBehaviour, IItemContainer
 
         foreach (var slot in containerSlots)
         {
-            slot.Init();
+            slot.OnEnterEvent += (slot) => EventHandler(slot, OnSlotPointerEnter);
+            slot.OnExitEvent += (slot) => EventHandler(slot, OnSlotPointerExit);
+            slot.OnBeginDragEvent += (slot) => EventHandler(slot, OnSlotBeginDrag);
+            slot.OnDragEvent += (slot) => EventHandler(slot, OnSlotDrag);
+            slot.OnEndDragEvent += (slot) => EventHandler(slot, OnSlotEndDrag);
+            slot.OnDropEvent += (slot) => EventHandler(slot, OnSlotDrop);
         }
+    }
+
+    private void EventHandler(BaseItemSlot slot, Action<BaseItemSlot> action)
+    {
+        action?.Invoke(slot);
     }
 
     public virtual bool AddItem(Item item, int amount = 1)
     {
-        int remaining = amount;
+        int remaining = 0;
 
         for (int i = 0; i < containerSlots.Length; i++)
         {
-            if (containerSlots[i].CanAddItem(item) && !containerSlots[i].IsFull())
+            if (containerSlots[i].CanAddStack(item) && !containerSlots[i].IsFull())
             {
-                if (containerSlots[i].IsOverStack(item, amount))
-                {
-                    int added = item.MaxStack - containerSlots[i].CurrentAmount;
-                    remaining = amount - added;
+                remaining = containerSlots[i].AddItemToSlot(item, amount);
 
-                    containerSlots[i].AddItemToSlot(item, added);
-                    AddItem(item, remaining);
-
-                    return false;
-                }
-                else
+                if (remaining > 0)
                 {
-                    containerSlots[i].AddItemToSlot(item, amount);
-                    return true;
+                    if (AddItem(item, remaining))
+                    {
+                        return true;
+                    }
                 }
+
+                return true;
             }
         }
 
@@ -45,35 +61,29 @@ public class ItemContainer : MonoBehaviour, IItemContainer
         {
             if (containerSlots[i].IsNull())
             {
-                if (containerSlots[i].IsOverStack(item, amount))
-                {
-                    int added = item.MaxStack - containerSlots[i].CurrentAmount;
-                    remaining = amount - added;
+                remaining = containerSlots[i].AddItemToSlot(item, amount);
 
-                    containerSlots[i].AddItemToSlot(item, added);
-                    AddItem(item, remaining);
-
-                    return false;
-                }
-                else
+                if (remaining > 0)
                 {
-                    containerSlots[i].AddItemToSlot(item, amount);
-                    return true;
+                    if (AddItem(item, remaining))
+                    {
+                        return true;
+                    }
                 }
+
+                return true;
             }
         }
 
-
         if (remaining > 0)
         {
-            Debug.Log("Item cannot added. Left: " + remaining);
-            return false;
+            OnRemainingItem?.Invoke(item, remaining);
         }
 
         return false;
     }
 
-    public virtual bool RemoveItem(Item item)
+    public virtual bool RemoveItem(Item item, int amount)
     {
         return true;
     }
