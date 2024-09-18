@@ -1,4 +1,4 @@
-public class PanelEquipment : UIPanel
+public class PanelEquipment : ContainerPanel
 {
 
 }

@@ -15,4 +15,5 @@ MonoBehaviour:
   itemName: Iron
   itemSprite: {fileID: 21300000, guid: 905caa38d128ce9429f0db022d4acc14, type: 3}
   stackSize: 9
-  isConsumables: 1
+  price: 28
+  isConsumables: 0

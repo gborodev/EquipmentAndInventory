@@ -1,4 +1,4 @@
-public class PanelStats : UIPanel
+public class PanelStats : ContainerPanel
 {
 
 }

@@ -15,4 +15,5 @@ MonoBehaviour:
   itemName: Meat
   itemSprite: {fileID: 21300000, guid: ee5750eb6831e654f92e603d2c04f5f1, type: 3}
   stackSize: 2
+  price: 20
   isConsumables: 1

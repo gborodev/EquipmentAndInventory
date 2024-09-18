@@ -15,4 +15,5 @@ MonoBehaviour:
   itemName: Iron Armor
   itemSprite: {fileID: 21300000, guid: dc8f1e2405ba75e46a774eb8a2244332, type: 3}
   stackSize: 1
+  price: 255
   equipmentType: 2

@@ -4,16 +4,18 @@ using UnityEngine.UI;
 public class PanelManagements : Singleton<PanelManagements>
 {
     [Header("Panels")]
-    [SerializeField] private UIPanel equipmentPanel;
-    [SerializeField] private UIPanel statsPanel;
-    [SerializeField] private UIPanel inventoryPanel;
-    [SerializeField] private UIPanel stashPanel;
-    [SerializeField] private UIPanel marketPanel;
+    [SerializeField] private ContainerPanel equipmentPanel;
+    [SerializeField] private ContainerPanel statsPanel;
+    [SerializeField] private ContainerPanel inventoryPanel;
+    [SerializeField] private ContainerPanel stashPanel;
+    [SerializeField] private ContainerPanel marketPanel;
 
     [Header("Buttons")]
     [SerializeField] private Button equipmentButton;
     [SerializeField] private Button stashButton;
     [SerializeField] private Button marketButton;
+
+    private ContainerPanel currentPanel;
 
     private void Start()
     {
@@ -33,13 +35,45 @@ public class PanelManagements : Singleton<PanelManagements>
 
     private void StashButtonHandler()
     {
-        stashPanel.Show();
-        marketPanel.Hide();
+        if (currentPanel != null)
+        {
+            if (currentPanel == stashPanel)
+            {
+                stashPanel.Hide();
+                currentPanel = null;
+                return;
+            }
+
+            currentPanel.Hide();
+            currentPanel = null;
+        }
+
+        currentPanel = stashPanel;
+        currentPanel.Show();
     }
 
     private void MarketButtonHandler()
     {
-        marketPanel.Show();
+        if (currentPanel != null)
+        {
+            if (currentPanel == marketPanel)
+            {
+                marketPanel.Hide();
+                currentPanel = null;
+                return;
+            }
+
+            currentPanel.Hide();
+            currentPanel = null;
+        }
+
+        currentPanel = marketPanel;
+        currentPanel.Show();
+    }
+
+    private void HideContainers()
+    {
+        marketPanel.Hide();
         stashPanel.Hide();
     }
 }

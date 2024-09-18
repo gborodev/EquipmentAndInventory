@@ -3,12 +3,13 @@ using UnityEngine;
 
 public class InventoryManager : Singleton<InventoryManager>
 {
+    [Header("Containers")]
     [SerializeField] InventoryContainer inventoryContainer;
     [SerializeField] StashContainer stashContainer;
     [SerializeField] MarketContainer marketContainer;
 
-    [SerializeField] UnityEngine.UI.Image dragPreview;
-
+    [Header("Tooltips")]
+    [SerializeField] MarketTooltip marketTooltip;
 
     [SerializeField] TestItem[] testItems;
 
@@ -19,10 +20,8 @@ public class InventoryManager : Singleton<InventoryManager>
         public int amount;
     }
 
-    BaseItemSlot dragSlot;
-
-    //Current other container;
-    ItemContainer otherContainer;
+    [SerializeField] UnityEngine.UI.Image dragPreview;
+    ItemSlot dragSlot;
 
     private void Start()
     {
@@ -31,47 +30,40 @@ public class InventoryManager : Singleton<InventoryManager>
             inventoryContainer.AddItem(item.item, item.amount);
         }
 
+        //Inventory Events
         inventoryContainer.OnSlotPointerEnter += TooltipShow;
         inventoryContainer.OnSlotPointerExit += TooltipHide;
         inventoryContainer.OnSlotBeginDrag += SlotBeginDrag;
         inventoryContainer.OnSlotDrag += SlotDrag;
         inventoryContainer.OnSlotEndDrag += SlotEndDrag;
         inventoryContainer.OnSlotDrop += SlotDrop;
-
-        ChangeContainer(stashContainer);
+        //Stash Events
+        stashContainer.OnSlotPointerEnter += TooltipShow;
+        stashContainer.OnSlotPointerExit += TooltipHide;
+        stashContainer.OnSlotBeginDrag += SlotBeginDrag;
+        stashContainer.OnSlotDrag += SlotDrag;
+        stashContainer.OnSlotEndDrag += SlotEndDrag;
+        stashContainer.OnSlotDrop += SlotDrop;
+        //Market Events
+        marketContainer.OnSlotPointerEnter += TooltipShow;
+        marketContainer.OnSlotPointerExit += TooltipHide;
+        marketContainer.OnSlotBeginDrag += SlotBeginDrag;
+        marketContainer.OnSlotDrag += SlotDrag;
+        marketContainer.OnSlotEndDrag += SlotEndDrag;
+        marketContainer.OnSlotDrop += SellItem;
     }
 
-    public void ChangeContainer(ItemContainer container)
-    {
-        if (otherContainer != null)
-        {
-            otherContainer.OnSlotPointerEnter -= TooltipShow;
-            otherContainer.OnSlotPointerExit -= TooltipHide;
-            otherContainer.OnSlotBeginDrag -= SlotBeginDrag;
-            otherContainer.OnSlotDrag -= SlotDrag;
-            otherContainer.OnSlotEndDrag -= SlotEndDrag;
-            otherContainer.OnSlotDrop -= SlotDrop;
-        }
-        otherContainer = container;
-        otherContainer.OnSlotPointerEnter += TooltipShow;
-        otherContainer.OnSlotPointerExit += TooltipHide;
-        otherContainer.OnSlotBeginDrag += SlotBeginDrag;
-        otherContainer.OnSlotDrag += SlotDrag;
-        otherContainer.OnSlotEndDrag += SlotEndDrag;
-        otherContainer.OnSlotDrop += SlotDrop;
-    }
-
-    private void TooltipShow(BaseItemSlot slot)
+    private void TooltipShow(ItemSlot slot)
     {
 
     }
 
-    private void TooltipHide(BaseItemSlot slot)
+    private void TooltipHide(ItemSlot slot)
     {
 
     }
 
-    private void SlotBeginDrag(BaseItemSlot slot)
+    private void SlotBeginDrag(ItemSlot slot)
     {
         if (slot.Item is not null)
         {
@@ -81,13 +73,11 @@ public class InventoryManager : Singleton<InventoryManager>
             dragPreview.sprite = dragSlot.Item.ItemIcon;
         }
     }
-
-    private void SlotDrag(BaseItemSlot slot)
+    private void SlotDrag(ItemSlot slot)
     {
         dragPreview.transform.position = Input.mousePosition;
     }
-
-    private void SlotEndDrag(BaseItemSlot slot)
+    private void SlotEndDrag(ItemSlot slot)
     {
         if (dragSlot != null)
         {
@@ -95,8 +85,7 @@ public class InventoryManager : Singleton<InventoryManager>
             dragSlot = null;
         }
     }
-
-    private void SlotDrop(BaseItemSlot slot)
+    private void SlotDrop(ItemSlot slot)
     {
         if (dragSlot == slot) return;
 
@@ -122,5 +111,18 @@ public class InventoryManager : Singleton<InventoryManager>
 
         dragSlot = null;
         dragPreview.gameObject.SetActive(false);
+    }
+
+    private void SellItem(ItemSlot slot)
+    {
+        if (dragSlot.Item != null)
+        {
+            marketTooltip.InitTooltip(dragSlot, true);
+        }
+    }
+
+    public void AddItemToInventory(Item item, int amount)
+    {
+        inventoryContainer.AddItem(item, amount);
     }
 }

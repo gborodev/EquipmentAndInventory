@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class BaseItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler
+public class BaseItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] Image itemIconImage;
     [SerializeField] TMP_Text itemAmountText;
@@ -37,16 +37,14 @@ public class BaseItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
             itemAmountText.gameObject.SetActive(amount > 1);
             itemAmountText.text = amount.ToString();
+
+            if (Amount <= 0) Item = null;
         }
     }
 
     //Events
     public event Action<BaseItemSlot> OnEnterEvent;
     public event Action<BaseItemSlot> OnExitEvent;
-    public event Action<BaseItemSlot> OnBeginDragEvent;
-    public event Action<BaseItemSlot> OnEndDragEvent;
-    public event Action<BaseItemSlot> OnDragEvent;
-    public event Action<BaseItemSlot> OnDropEvent;
 
     private void OnValidate()
     {
@@ -75,24 +73,7 @@ public class BaseItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void RemoveItemToSlot(Item item, int amount = 1)
     {
-        Item = item;
         Amount -= amount;
-    }
-
-    private void SlotChanged(ItemSlot slot)
-    {
-        if (slot.Item is null)
-        {
-            itemIconImage.enabled = false;
-            itemAmountText.text = "";
-        }
-        else
-        {
-            itemIconImage.enabled = true;
-
-            itemIconImage.sprite = slot.Item.ItemIcon;
-            itemAmountText.text = slot.Amount > 1 ? slot.Amount.ToString() : "";
-        }
     }
 
     public virtual bool CanAddStack(Item item)
@@ -123,27 +104,7 @@ public class BaseItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         return Amount >= Item.MaxStack;
     }
 
-    #region Event Funcs
-    public void OnDrop(PointerEventData eventData)
-    {
-        OnDropEvent?.Invoke(this);
-    }
-
-    public void OnDrag(PointerEventData eventData)
-    {
-        OnDragEvent?.Invoke(this);
-    }
-
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        OnEndDragEvent?.Invoke(this);
-    }
-
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        OnBeginDragEvent?.Invoke(this);
-    }
-
+    //Event Funcs
     public void OnPointerExit(PointerEventData eventData)
     {
         OnExitEvent?.Invoke(this);
@@ -153,5 +114,4 @@ public class BaseItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     {
         OnEnterEvent?.Invoke(this);
     }
-    #endregion
 }

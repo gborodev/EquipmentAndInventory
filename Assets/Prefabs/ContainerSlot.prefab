@@ -220,7 +220,7 @@ GameObject:
   - component: {fileID: 1074306571219901492}
   - component: {fileID: 1811157232331788109}
   - component: {fileID: 8656372001034857996}
-  - component: {fileID: 2519283540969621636}
+  - component: {fileID: 140240370132774273}
   m_Layer: 5
   m_Name: ContainerSlot
   m_TagString: Untagged
@@ -270,7 +270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.8773585, g: 0.8773585, b: 0.8773585, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -287,7 +287,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2519283540969621636
+--- !u!114 &140240370132774273
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -296,7 +296,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6437307444664771466}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2a8d0fb26179a240b4b19a476a31a0e, type: 3}
+  m_Script: {fileID: 11500000, guid: b70f23b147c71154da0c49772ea0387f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   itemIconImage: {fileID: 389939940321809128}

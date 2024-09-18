@@ -1,4 +1,4 @@
-public class PanelMarket : UIPanel
+public class PanelMarket : ContainerPanel
 {
 
 }

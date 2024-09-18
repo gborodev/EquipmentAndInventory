@@ -1,4 +1,4 @@
-public class PanelStash : UIPanel
+public class PanelStash : ContainerPanel
 {
 
 }

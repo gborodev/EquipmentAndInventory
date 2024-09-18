@@ -1,38 +1,32 @@
 using System;
+using UnityEngine.EventSystems;
 
-public class ItemSlot
+public class ItemSlot : BaseItemSlot, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler
 {
-    private Item item;
-    private int amount;
+    public event Action<BaseItemSlot> OnBeginDragEvent;
+    public event Action<BaseItemSlot> OnEndDragEvent;
+    public event Action<BaseItemSlot> OnDragEvent;
+    public event Action<BaseItemSlot> OnDropEvent;
 
-    public event Action<ItemSlot> OnSlotChanged;
 
-    public Item Item
+    public void OnDrop(PointerEventData eventData)
     {
-        get => item;
-        set
-        {
-            item = value;
-
-            OnSlotChanged?.Invoke(this);
-        }
-    }
-    public int Amount
-    {
-        get => amount;
-        set
-        {
-            amount = value;
-
-            if (amount <= 0) Item = null;
-
-            OnSlotChanged?.Invoke(this);
-        }
+        OnDropEvent?.Invoke(this);
     }
 
-    public ItemSlot()
+    public void OnDrag(PointerEventData eventData)
     {
-        item = null;
-        amount = 0;
+        OnDragEvent?.Invoke(this);
     }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        OnEndDragEvent?.Invoke(this);
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        OnBeginDragEvent?.Invoke(this);
+    }
+
 }

@@ -3,20 +3,20 @@ using UnityEngine;
 
 public class ItemContainer : MonoBehaviour, IItemContainer
 {
-    [SerializeField] BaseItemSlot[] containerSlots;
+    [SerializeField] ItemSlot[] containerSlots;
 
-    public event Action<BaseItemSlot> OnSlotPointerEnter;
-    public event Action<BaseItemSlot> OnSlotPointerExit;
-    public event Action<BaseItemSlot> OnSlotBeginDrag;
-    public event Action<BaseItemSlot> OnSlotDrag;
-    public event Action<BaseItemSlot> OnSlotEndDrag;
-    public event Action<BaseItemSlot> OnSlotDrop;
+    public event Action<ItemSlot> OnSlotPointerEnter;
+    public event Action<ItemSlot> OnSlotPointerExit;
+    public event Action<ItemSlot> OnSlotBeginDrag;
+    public event Action<ItemSlot> OnSlotDrag;
+    public event Action<ItemSlot> OnSlotEndDrag;
+    public event Action<ItemSlot> OnSlotDrop;
 
     public event Action<Item, int> OnRemainingItem;
 
     protected virtual void Awake()
     {
-        containerSlots = GetComponentsInChildren<BaseItemSlot>(false);
+        containerSlots = GetComponentsInChildren<ItemSlot>(false);
 
         foreach (var slot in containerSlots)
         {
@@ -29,9 +29,9 @@ public class ItemContainer : MonoBehaviour, IItemContainer
         }
     }
 
-    private void EventHandler(BaseItemSlot slot, Action<BaseItemSlot> action)
+    private void EventHandler(BaseItemSlot slot, Action<ItemSlot> action)
     {
-        action?.Invoke(slot);
+        action?.Invoke((ItemSlot)slot);
     }
 
     public virtual bool AddItem(Item item, int amount = 1)
@@ -55,7 +55,6 @@ public class ItemContainer : MonoBehaviour, IItemContainer
                 return true;
             }
         }
-
 
         for (int i = 0; i < containerSlots.Length; i++)
         {

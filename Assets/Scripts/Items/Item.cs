@@ -8,10 +8,12 @@ public abstract class Item : ScriptableObject
     [SerializeField] private string itemName;
     [SerializeField] private Sprite itemSprite;
     [SerializeField][Range(1, 99)] private int stackSize = 1;
+    [SerializeField][Range(1, 999999)] private int price = 1;
 
     public string ItemName => itemName;
     public Sprite ItemIcon => itemSprite;
     public int MaxStack => stackSize;
+    public int Price => price;
 
     private void OnEnable()
     {

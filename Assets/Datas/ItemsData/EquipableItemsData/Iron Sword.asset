@@ -15,4 +15,5 @@ MonoBehaviour:
   itemName: Iron Sword
   itemSprite: {fileID: 21300000, guid: 2cd8ff2b209e9fb409dc0fee139a343d, type: 3}
   stackSize: 1
+  price: 177
   equipmentType: 1

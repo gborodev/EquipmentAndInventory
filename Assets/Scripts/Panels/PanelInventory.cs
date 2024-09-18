@@ -1,4 +1,4 @@
-public class PanelInventory : UIPanel
+public class PanelInventory : ContainerPanel
 {
 
 }
